@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sagara - Kerala Tourism Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-icon" title="Home">&#8962;</div>
+    <div class="sidebar-icon" title="Discover">&#127758;</div>
+    <div class="sidebar-icon" title="Spaces">&#128214;</div>
+    <div class="sidebar-icon pro" title="Pro Account">&#128100;</div>
+    <div class="sidebar-icon" title="Upgrade">&#8679;</div>
+    <div class="sidebar-icon red-dot" title="Install">&#128229;</div>
+  </div>
+
+  <div class="main-content">
+    <div class="logo">Sagara</div>
+    <p class="description">
+    Welcome to Sagara!, your Kerala Tourism Guide. Ask me anything about the beautiful state of Kerala — from beaches to backwaters, food, culture, and more!
+  </p>
+    <div class="search-box">
+      <div class="search-bar">
+        <button class="icon-btn" title="Search">&#128269;</button>
+        <input id="userInput" type="text" placeholder="Ask anything about Kerala tourism..." autofocus aria-label="Message input" />
+      </div>
+      <div class="messages" aria-live="polite" aria-label="Chat messages"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
