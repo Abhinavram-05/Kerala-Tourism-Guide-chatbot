@@ -1,0 +1,156 @@
+const responses = {
+  greeting: [
+    "Namaskaram! Welcome to Kerala Tourism Guide. How can I help you plan your Kerala adventure today?",
+    "Hello! I'm Sagara, your Kerala travel guide. Are you looking for destinations, food, culture, or something else?"
+  ],
+  thanks: [
+    "Glad to help! Have a wonderful time exploring Kerala.",
+    "You're most welcome! Let me know if you need more travel tips."
+  ],
+  beach: [
+    "Kerala has stunning beaches like Kovalam, Varkala, and Marari. Would you like recommendations for a beach stay? (yes/no)",
+    "You’ll love the tranquil beaches of Kerala. Would you like to know about water sports or beach resorts? (yes/no)"
+  ],
+  beach_yes: [
+    "If you love lively beaches, Kovalam is perfect. For a quiet vibe, try Marari. Want more details or guidance on beach stays?",
+    "Varkala is great for both relaxation and scenic cliffs. I can suggest top resorts or activities there!"
+  ],
+  beach_no: [
+    "No worries! We can explore other attractions in Kerala. Anything else you are interested in?"
+  ],
+  backwaters: [
+    "Kerala's backwaters, especially in Alleppey and Kumarakom, offer famous houseboat experiences. Would you like top routes or best times to visit? (yes/no)",
+    "Would you like information on booking a houseboat or popular backwater villages? (yes/no)"
+  ],
+  backwaters_yes: [
+    "Alleppey is famous for overnight houseboats, while Kumarakom is known for birdlife and serenity. Would you like houseboat contact info or local tips?",
+    "Book a houseboat between October and March for the best experience! Want booking help or info on boat races?"
+  ],
+  backwaters_no: [
+    "Alright! If you want to know about beaches, hills or culture, just ask."
+  ],
+  food: [
+    "Don't miss Kerala's sadya, appam with stew, and fresh seafood. Want to know more about the Vegetarian and Non Vegetarian dishes? (yes/no)",
+    "Kerala cuisine is rich in flavors. Would you like tips on street food or food festivals? (yes/no)"
+  ],
+ food_yes: [
+  "Try Paragon in Kozhikode for Malabar biryani, or eat street snacks in Fort Kochi! want to go with vegetarian or Non Vegetarian?",
+  "Don't miss local toddy shops for an authentic experience. Need a list of must-try dishes?",
+  "Vegetarian Dishes: Puttu and Kadala Curry, Appam with Stew, Kerala Sadhya, Idiyappam, Toran.",
+  "Non-Vegetarian Dishes: Karimeen Pollichathu, Kerala Prawn Curry, Naadan Beef Fry, Malabar Parota with Beef, Thalassery Biryani.",
+  "Sweets and Desserts: Payasam, Palada Payasam, Unniyappam, Boli."
+],
+
+  food_no: [
+    "No problem! Let me know if you want tips on something else—from sightseeing to wellness."
+  ],
+  wellness: [
+    "Kerala is famous for its Ayurveda and yoga retreats. Want spa or treatment center recommendations? (yes/no)",
+    "Would you like a list of top wellness resorts or natural healing experiences? (yes/no)"
+  ],
+  wellness_yes: [
+    "Somatheeram and Kalari Kovilakom are top wellness resorts. Want info on treatments or booking?",
+    "I can give you the best Ayurveda centers based on your location—just let me know your travel route!"
+  ],
+  wellness_no: [
+    "Alright! You can always ask later if you wish to know more about wellness experiences in Kerala."
+  ],
+  unknown: [
+    "Could you please rephrase or specify what you'd like to know about Kerala travel?",
+    "I'm not sure I understood, but I’m here to help with any Kerala tourism questions."
+  ],
+  goodbye: [
+    "Wishing you a memorable journey through Kerala! To know more about Kerala tourism please visit the  official website-keralatourism.org,GoodBye!",
+    "Take care and enjoy God’s Own Country! Reach out if you need more travel assistance."
+  ]
+};
+
+let lastQuestion = null;
+
+function cleanInput(input) {
+  return input.toLowerCase().replace(/[^\w\s]/gi, '').trim();
+}
+
+function randomChoice(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getResponse(userInput) {
+  const text = cleanInput(userInput);
+
+  if (lastQuestion) {
+    if (text === "yes" || text === "y") {
+      const key = lastQuestion + "_yes";
+      lastQuestion = null;
+      return responses[key] ? randomChoice(responses[key]) : "Great! How else can I assist you?";
+    } else if (text === "no" || text === "n") {
+      const key = lastQuestion + "_no";
+      lastQuestion = null;
+      return responses[key] ? randomChoice(responses[key]) : "Okay, no problem! What else would you like to know?";
+    } else {
+      return "Please answer with 'yes' or 'no'.";
+    }
+  }
+
+  const keywords = {
+    greeting: ["hello", "hi", "hey", "namaskaram", "greetings", "good", "morning", "evening", "afternoon"],
+    thanks: ["thanks", "thank", "appreciate", "grateful"],
+    goodbye: ["bye", "goodbye", "exit", "see you", "farewell"],
+    beach: ["beach", "sand", "sea", "ocean", "kovalam", "varkala", "marari"],
+    backwaters: ["backwater", "houseboat", "alappuzha", "alleppey", "kumarakom"],
+    food: ["food", "eat", "cuisine", "restaurant", "sadya", "seafood", "appam", "cafe"],
+    wellness: ["wellness", "ayurveda", "spa", "yoga", "massage", "retreat"]
+  };
+
+  for (const [intent, keys] of Object.entries(keywords)) {
+    for (const key of keys) {
+      if (text.includes(key)) {
+        const yesNoIntents = ["beach", "backwaters", "food", "wellness"];
+        if (yesNoIntents.includes(intent)) {
+          lastQuestion = intent;
+        }
+        return randomChoice(responses[intent]);
+      }
+    }
+  }
+
+  return randomChoice(responses.unknown);
+}
+
+// DOM SELECTORS - Make sure these match your HTML!
+const messagesDiv = document.querySelector('.messages');
+const inputBox = document.getElementById('userInput');
+
+// Add a message bubble to the chat
+function addMessage(content, sender = 'bot') {
+  const div = document.createElement('div');
+  div.className = 'message-bubble' + (sender === 'user' ? ' user' : '');
+  div.textContent = content;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Send message on Enter
+inputBox.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    const userMessage = inputBox.value.trim();
+    if (!userMessage) return;
+    addMessage(userMessage, 'user');
+    inputBox.value = '';
+    // Bot typing simulation
+    addMessage("Sagara is typing...");
+    setTimeout(() => {
+      // Remove "typing" bubble before reply
+      const typingDiv = messagesDiv.querySelector('.message-bubble:last-child');
+      if (typingDiv && typingDiv.textContent === "Sagara is typing...") typingDiv.remove();
+      const botReply = getResponse(userMessage);
+      addMessage(botReply, 'bot');
+    }, 600);
+  }
+});
+
+// Initial bot greeting on page load
+window.onload = () => {
+  addMessage(randomChoice(responses.greeting), 'bot');
+  inputBox.focus();
+};
